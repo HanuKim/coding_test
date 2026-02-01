@@ -58,29 +58,47 @@ class Solution
 		for(int test_case = 1; test_case <= T; test_case++)
 		{
 		
- 			// 숫자 배열을 순회하며 다른 숫자로 전환되는 횟수를 뽑아내면 될 듯 ..
+            // 숫자 배열을 순회하며 다른 숫자로 전환되는 횟수를 뽑아내면 될 듯 ..
             String input = sc.next();
 
-            int[] arr = new int[input.length()];
-            for (int i = 0; i < input.length(); i++) {
-                arr[i] = input.charAt(i) - '0';
-            }
+//            int[] arr = new int[input.length()];
+//            for (int i = 0; i < input.length(); i++) {
+//                arr[i] = input.charAt(i) - '0';
+//            }
+//
+//            int sum = 0;
+//            // 0번 째 인덱스가 1이면 한 번 바꿔줘야 하니까 1 더하기
+//            if (arr[0] != 0) {
+//                sum++;
+//            }
+//
+//            // 비교 대상이 존재하는 1번 째 인덱스부터 순회
+//            for (int i = 1; i < arr.length; i++) {
+//                if (arr[i] != arr[i-1]) {
+//                    sum++;
+//                }
+//            }
 
-            int sum = 0;
-            // 0번 째 인덱스가 1이면 한 번 바꿔줘야 하니까 1 더하기
-            if (arr[0] != 0) {
-                sum++;
-            }
-
-            // 비교 대상이 존재하는 1번 째 인덱스부터 순회
-            for (int i = 1; i < arr.length; i++) {
-                if (arr[i] != arr[i-1]) {
-                    sum++;
-                }
-            }
-
-            System.out.println("#" + test_case + " " + sum);
+            // 재귀로 풀어보자...
+            // idx 0부텨 입력 받은 문자열 길이만큼 재귀함수 반복
+            // 위 방법과 마찬가지로 이전 문자열과 지금 문자열 비교하기
+            // 0번 째 인덱스의 비교 문자열 '0'을 전달해주자
+            count = 0;
+            dfs(0, '0', input);
+            System.out.println("#" + test_case + " " + count);
 
 		}
 	}
+        // 이전과 다른 숫자가 나오는 횟수
+    static int count;
+
+    // 재귀함수
+    static void dfs(int idx, char prev, String s) {
+        if (idx == s.length()) return;
+
+        if (s.charAt(idx) != prev) {
+            count++;
+        }
+        dfs(idx + 1, s.charAt(idx), s);
+    }
 }
