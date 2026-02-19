@@ -6,6 +6,7 @@ import java.util.StringTokenizer;
 
 /* 숨바꼭질 */
 public class Main {
+    private static final int MAX_NUM = 100000;
     // 각 정점에서 뻗어 나갈 수 있는 갈래는 x-1, x+1, x*2
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,22 +18,23 @@ public class Main {
     }
 
     private static int bfs(int current, int target) {
-        Queue<int[]> queue = new LinkedList<>();
-        boolean[] visited = new boolean[100001];
+        if (current == target) return 0; // 현재 위치와 목표 위치가 같으면 0 반환
 
-        queue.add(new int[]{current, 0});
-        visited[current] = true;
+        Queue<Integer> queue = new LinkedList<>();
+        int[] dist = new int[MAX_NUM + 1]; // 방문 여부와 시간을 동시에 기록해보자.. => 0은 미방문한 위치
+
+        queue.add(current);
+
         while (!queue.isEmpty()) {
-            int[] curr = queue.poll();
-            int pos = curr[0];
-            int times = curr[1];
+            int curr = queue.poll();
 
-            if (pos == target) return times; // 목적지 도착
-            int[] nextSteps = {pos + 1, pos - 1, pos * 2};
+            int[] nextSteps = {curr + 1, curr - 1, curr * 2};
             for (int next : nextSteps) {
-                if (next >= 0 && next <= visited.length - 1 && !visited[next]) {
-                    visited[next] = true;
-                    queue.add(new int[]{next, times + 1});
+                if (next >= 0 && next <= MAX_NUM && dist[next] == 0) {
+                    if (next == target) return dist[curr] + 1; // 큐에 굳이 할당하지 않고 바로 dist + 1 해서 반환 
+
+                    dist[next] = dist[curr] + 1;
+                    queue.add(next);
                 }
             }
         }
