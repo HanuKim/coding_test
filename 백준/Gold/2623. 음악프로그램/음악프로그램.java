@@ -2,23 +2,21 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static int N, M;
-    static ArrayList<Integer>[] adj;
-    static int[] visited; // 0: 미방문, 1: 방문 중(Stack에 있음), 2: 방문 완료
-    static Stack<Integer> stack = new Stack<>();
-    static boolean hasCycle = false;
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken()); // 가수의 수
+        int M = Integer.parseInt(st.nextToken()); // 보조 PD의 수
 
-        adj = new ArrayList[N + 1];
-        for (int i = 1; i <= N; i++) adj[i] = new ArrayList<>();
-        visited = new int[N + 1];
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i <= N; i++) {
+            adj.add(new ArrayList<>());
+        }
 
+        int[] indegree = new int[N + 1];
+
+        // 1. 그래프 구축 및 진입 차수 계산
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
             int count = Integer.parseInt(st.nextToken());
@@ -27,46 +25,40 @@ public class Main {
             int u = Integer.parseInt(st.nextToken());
             for (int j = 1; j < count; j++) {
                 int v = Integer.parseInt(st.nextToken());
-                adj[u].add(v);
-                u = v;
+                adj.get(u).add(v);
+                indegree[v]++;
+                u = v; // 다음 관계를 위해 업데이트
             }
         }
 
-        // 모든 노드에 대해 DFS 수행
+        // 2. 위상 정렬 시작 (진입 차수가 0인 노드 큐에 삽입)
+        Queue<Integer> q = new LinkedList<>();
         for (int i = 1; i <= N; i++) {
-            if (visited[i] == 0) {
-                dfs(i);
+            if (indegree[i] == 0) {
+                q.offer(i);
             }
         }
 
-        // 사이클이 발견되었다면 0 출력, 아니면 스택 내용 출력
-        if (hasCycle) {
-            System.out.println(0);
-        } else {
-            StringBuilder sb = new StringBuilder();
-            while (!stack.isEmpty()) {
-                sb.append(stack.pop()).append("\n");
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        while (!q.isEmpty()) {
+            int curr = q.poll();
+            sb.append(curr).append("\n");
+            count++;
+
+            for (int next : adj.get(curr)) {
+                indegree[next]--;
+                if (indegree[next] == 0) {
+                    q.offer(next);
+                }
             }
+        }
+
+        // 3. 결과 출력 (모든 가수를 방문했는지 확인)
+        if (count == N) {
             System.out.print(sb);
+        } else {
+            System.out.println(0);
         }
-    }
-
-    static void dfs(int curr) {
-        if (hasCycle) return;
-
-        visited[curr] = 1; // 현재 노드를 '방문 중' 상태로 표시
-
-        for (int next : adj[curr]) {
-            if (visited[next] == 1) { // 탐색 경로 상의 노드를 다시 만남 = 사이클
-                hasCycle = true;
-                return;
-            }
-            if (visited[next] == 0) {
-                dfs(next);
-            }
-        }
-
-        visited[curr] = 2; // 탐색 완료
-        stack.push(curr);  // 역순 출력을 위해 스택에 삽입
     }
 }
