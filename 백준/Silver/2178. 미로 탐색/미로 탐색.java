@@ -8,7 +8,6 @@ import java.util.StringTokenizer;
 public class Main {
     static int N, M;
     static int[][] map;
-    static boolean[][] visited;
     static int[] dx = {0, 0, -1, 1};
     static int[] dy = {1, -1, 0, 0};
     public static void main(String[] args) throws Exception {
@@ -19,7 +18,6 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         map = new int[N][M];
-        visited = new boolean[N][M];
 
         for (int i = 0; i < N; i++) {
             String line = br.readLine();
@@ -36,7 +34,6 @@ public class Main {
     public static void bfs() {
         Queue<int[]> q = new LinkedList<>();
         q.offer(new int[]{0, 0});
-        visited[0][0] = true;
 
         while (!q.isEmpty()) {
             int[] cur = q.poll();
@@ -46,10 +43,8 @@ public class Main {
                 int ny = cur[1] + dy[d];
 
                 if (nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
-                if (visited[nx][ny]) continue;
-                if (map[nx][ny] == 0) continue;
+                if (map[nx][ny] != 1) continue;
 
-                visited[nx][ny] = true;
                 map[nx][ny] = map[cur[0]][cur[1]] + 1;
 
                 q.offer(new int[]{nx, ny});
