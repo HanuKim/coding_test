@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,7 +11,7 @@ public class Main {
 	static int[] dx = { 0, 0, 0, -1, 1 };
 	static int[] dy = { 0, 1, -1, 0, 0 };
 	static int[][][] dir = { {}, { { 1 }, { 2 }, { 3 }, { 4 } }, { { 3, 4 }, { 1, 2 } },
-			{ { 1, 4 }, { 4, 2 }, { 2, 3 }, { 1, 3 } }, { { 1, 3, 4 }, { 1, 2, 3 }, { 1, 2, 4 }, { 2, 3, 4 } },
+			{ { 1, 4 }, { 2, 4 }, { 2, 3 }, { 1, 3 } }, { { 1, 3, 4 }, { 1, 2, 3 }, { 1, 2, 4 }, { 2, 3, 4 } },
 			{ { 1, 2, 3, 4 } } };
 
 	private static int[][] copyMap(int[][] map) {
