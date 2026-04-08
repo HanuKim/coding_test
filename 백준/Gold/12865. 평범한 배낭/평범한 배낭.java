@@ -13,17 +13,25 @@ public class Main {
 			values[i] = sc.nextInt(); 
 		}
 		
-		int[][] dp = new int[n+1][k+1];
+//		int[][] dp = new int[n+1][k+1];
+//		for (int i = 1; i <= n; i++) {
+//			for (int j = 1; j <= k; j++) {
+//				if (j - weights[i] >= 0) {
+//					dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - weights[i]] + values[i]);
+//				} else {
+//					dp[i][j] = dp[i - 1][j];
+//				}
+//			}
+//		}
+		
+		int[] dp = new int[k+1];
+
 		for (int i = 1; i <= n; i++) {
-			for (int j = 1; j <= k; j++) {
-				if (j - weights[i] >= 0) {
-					dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - weights[i]] + values[i]);
-				} else {
-					dp[i][j] = dp[i - 1][j];
-				}
-			}
+		    for (int j = k; j >= weights[i]; j--) {
+		        dp[j] = Math.max(dp[j], dp[j - weights[i]] + values[i]);
+		    }
 		}
 		
-		System.out.println(dp[n][k]);
+		System.out.println(dp[k]);
 	}
 }
