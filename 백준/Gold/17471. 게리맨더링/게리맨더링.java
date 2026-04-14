@@ -75,19 +75,25 @@ public class Main {
 	// 연결 유효성 확인 
 	static boolean isConnected(List<Integer> team) {
 		Queue<Integer> q = new LinkedList<>(); 
-		// ** 방문 여부 체크 
 		boolean[] visited = new boolean[N]; 
-		q.offer(team.get(0));  
-		visited[team.get(0)] = true; 
+		boolean[] inTeam = new boolean[N]; 
 		
+		for (int t : team) {
+			inTeam[t] = true; 
+		}
+		
+		q.offer(team.get(0)); 
+		visited[team.get(0)] = true; 
 		int count = 1; 
+		
 		while (!q.isEmpty()) {
 			int cur = q.poll(); 
+			
 			for (int next : adj.get(cur)) {
-				if (team.contains(next) && !visited[next]) {
+				if (inTeam[next] && !visited[next]) {
 					visited[next] = true; 
 					q.offer(next); 
-					count++;
+					count++; 
 				}
 			}
 		}
