@@ -2,6 +2,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Scanner;
 
+/* 벽 부수고 이동하기 */
 public class Main {
     static int N, M;
     static int[][] map;
