@@ -1,91 +1,99 @@
-import java.io.*;
-import java.util.*;
+import java.util.Scanner;
 
 public class Solution {
+	static int D, W, K, ans;
+	static int[][] map;
 
-    static int D, W, K;
-    static int[][] map;
-    static int min;
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int T = sc.nextInt();
+		for (int tc = 1; tc <= T; tc++) {
+			D = sc.nextInt();
+			W = sc.nextInt();
+			K = sc.nextInt();
 
-    public static void main(String[] args) throws Exception {
+			map = new int[D][W];
+			for (int i = 0; i < D; i++) {
+				for (int j = 0; j < W; j++) {
+					map[i][j] = sc.nextInt();
+				}
+			}
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine());
+			ans = K; // 투약 횟수의 최댓값은 K
 
-        for(int tc=1; tc<=T; tc++){
+			// K가 1이면 바로 통과
+			if (K == 1 || check()) {
+				System.out.println("#" + tc + " 0");
+			} else {
+				dfs(0, 0);
+				System.out.println("#" + tc + " " + ans);
+			}
+		}
+	}
 
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            D = Integer.parseInt(st.nextToken());
-            W = Integer.parseInt(st.nextToken());
-            K = Integer.parseInt(st.nextToken());
+	static void dfs(int row, int cnt) {
+		// 1. 가지치기: 현재 투약 횟수가 이미 찾은 최솟값보다 크면 중단
+		if (cnt >= ans)
+			return;
 
-            map = new int[D][W];
+		// 2. 기저 조건: 모든 행의 결정이 끝남
+		if (row == D) {
+			if (check()) {
+				ans = Math.min(ans, cnt);
+			}
+			return;
+		}
 
-            for(int i=0;i<D;i++){
-                st = new StringTokenizer(br.readLine());
-                for(int j=0;j<W;j++){
-                    map[i][j] = Integer.parseInt(st.nextToken());
-                }
-            }
+		// 3. 탐색 3가지
+		// 1) 투여 안 함
+		dfs(row + 1, cnt);
 
-            if(K == 1){
-                System.out.println("#"+tc+" 0");
-                continue;
-            }
+		// 원본 백업
+		int[] backup = new int[W];
+		for (int i = 0; i < W; i++) {
+			backup[i] = map[row][i];
+		}
 
-            min = Integer.MAX_VALUE;
-            dfs(0,0);
+		// 2) a 투여
+		for (int i = 0; i < W; i++) {
+			map[row][i] = 0;
+		}
+		dfs(row + 1, cnt + 1);
 
-            System.out.println("#"+tc+" "+min);
-        }
-    }
+		// 3) b 투여
+		for (int i = 0; i < W; i++) {
+			map[row][i] = 1;
+		}
+		dfs(row + 1, cnt + 1);
 
-    static void dfs(int row, int cnt){
+		// 원상 복구
+		for (int i = 0; i < W; i++) {
+			map[row][i] = backup[i];
+		}
+	}
 
-        if(cnt >= min) return;
+	static boolean check() {
+		for (int i = 0; i < W; i++) {
+			boolean pass = false;
+			int count = 1;
+			for (int j = 0; j < D - 1; j++) {
+				if (map[j][i] == map[j + 1][i]) {
+					count++;
+				} else {
+					count = 1;
+				}
 
-        if(row == D){
-            if(check())
-                min = Math.min(min, cnt);
-            return;
-        }
+				if (count >= K) {
+					pass = true;
+					break;
+				}
+			}
 
-        dfs(row+1, cnt);
+			if (!pass)
+				return false;
 
-        int[] backup = map[row].clone();
+		}
 
-        Arrays.fill(map[row],0);
-        dfs(row+1, cnt+1);
-
-        Arrays.fill(map[row],1);
-        dfs(row+1, cnt+1);
-
-        map[row] = backup;
-    }
-
-    static boolean check(){
-
-        for(int col=0; col<W; col++){
-
-            int count = 1;
-            boolean pass = false;
-
-            for(int row=1; row<D; row++){
-
-                if(map[row][col] == map[row-1][col])
-                    count++;
-                else
-                    count = 1;
-
-                if(count >= K){
-                    pass = true;
-                    break;
-                }
-            }
-
-            if(!pass) return false;
-        }
-
-        return true;
-    }
+		return true;
+	}
 }
