@@ -1,2 +1,2 @@
-# coding_test
-coding test archiving
+# algorithm practice
+algorithm problem & solving archiving
